@@ -1,0 +1,18 @@
+# local data, caches, outputs and environments (the match data must never be committed)
+/data/
+/data_external/
+cache/**
+!cache/**/
+!cache/degprof/ext_rand_gaps.npz
+!cache/degprof/refD3_ext_sequences.npz
+!cache/vision/refine/runs/all_v3tied/model_20000.pt
+!cache/vision/runs/ball/weights/best.pt
+!cache/vision/runs/players_s/weights/best.pt
+!cache/vision/track/d4h_linker.pt
+!cache/vision/track/k2_reid_h3.pt
+/runs/
+evaluation/results/*.csv
+.venv/
+.venv-vision/
+__pycache__/
+*.py[cod]

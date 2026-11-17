@@ -1,0 +1,53 @@
+{
+ "name": "R2_n4_rd3n4tsoo375",
+ "pipeline": "mtah.merge_final",
+ "about": "E146 AVO r9 merge e146_R_rd3n4_tsoo375 = R|rd3n4|tsoo|0.375|n4 (tools/avo9_merge.py) as a run.py pipeline (E152): #4's combined heads with team / sw / on / off blended 37.5% toward the combined heads of the same recipe trained under refD3_ext and predicted on the refined video ball (raw2_nnb_P_d383rg_refD3_v4), #4's Viterbi options",
+ "members": {
+  "n4": "notes/avo/configs/raw2_nnb_P_d383rg_v4.json",
+  "rd3n4": "notes/avo/configs/raw2_nnb_P_d383rg_refD3_v4.json"
+ },
+ "merge": {
+  "base": "n4",
+  "X": "rd3n4",
+  "X_capture": true,
+  "heads": [
+   "team",
+   "sw",
+   "on",
+   "off"
+  ],
+  "w": 0.375
+ },
+ "decoder": {
+  "switch": 3,
+  "dead": 8,
+  "beta": 3.0,
+  "dead_gate": {
+   "lo": 0.7,
+   "hi": 0.85,
+   "w": 0.5,
+   "heads": [
+    "dead",
+    "on",
+    "off"
+   ]
+  },
+  "w_raw": {
+   "team": 0.5,
+   "sw": 0.5
+  },
+  "w_nnb": {
+   "dead": 0.5
+  },
+  "raw_gate": {
+   "w": 0.333,
+   "lo": 0.7,
+   "hi": 0.85,
+   "heads": [
+    "dead",
+    "on",
+    "off"
+   ]
+  }
+ }
+}

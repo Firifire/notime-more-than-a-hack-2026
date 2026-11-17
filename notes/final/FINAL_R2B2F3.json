@@ -1,0 +1,146 @@
+{
+ "about": "Recipe: the two possession models (n4 on the provided ball, rd3n4 on the refined video ball) predict the match on two player inputs - the provided tracking with kit-colour team corrections and players from our own video tracker - and their heads are mixed 0.625 / 0.375 per model before the model blend, the Viterbi decoder and the restart tag layer; nothing is fitted on the match.",
+ "team": "NoTime",
+ "config": "notes/avo/configs/R2_n4_rd3n4tsoo375.json",
+ "decoder": null,
+ "decoder_note": "null = the merge config's \"decoder\" block (= #4's decoder; it is applied to #4's member heads to capture its combined heads and residual Viterbi options, mtah.merge_final)",
+ "signals": "runs/final/{name}.F3.signals.npz",
+ "output": "evaluation/results/NoTime.csv",
+ "expected": {
+  "csv_sha256": "d91224e6b03b780219ad61983c3f4d5a0546f4fdb2aa842209ac99c8fd231cc3",
+  "feature_hash": {
+   "raw2_nnb_P_d383rg_v4": "fb555aa8d1",
+   "raw2_nnb_P_d383rg_refD3_v4": "bf7cc90c6a"
+  },
+  "external_manifest": "docs/external_manifest.json",
+  "vision": {
+   "ball_video_refD3.npz": {
+    "content_sha256": "21c4096ca74455f4f4b5df717f0aa110238aa44f04cd1d167ee0ede975c3ce4e",
+    "detector": {
+     "path": "cache/vision/runs/ball/weights/best.pt",
+     "sha256": "dd78e2bc5ae8ed46a71768abb3909e67f9f5e2dd7ce2158cd12faccf836af481",
+     "note": "YOLO11s ball detector trained on SoccerNet-GSR 2024 + Roboflow Football-Player-Detection only (src/vision/prep_dataset.py, train.py); shipped because its training is not bit-deterministic"
+    },
+    "refiner": {
+     "path": "cache/vision/refine/runs/all_v3tied/model_20000.pt",
+     "sha256": "dceacd24f1eae59f3635cd4df5e77cde467d1fe65bbd3acf073c3f32fcb5d75c",
+     "note": "Track D TrajDiffusion refiner, all-data model all_v3tied step 20000, trained on external data only (vision.refine.train): simulated evidence on clean IDSSE / PFF / Metrica ball tracks + real detector candidates on SoccerTrack v2 training halves; never on the provided match and never on ISSIA (held-out benchmark only); shipped"
+    },
+    "detect_cmd": [
+     "src/vision/detect.py",
+     "--weights",
+     "cache/vision/runs/ball/weights/best.pt",
+     "--all"
+    ],
+    "refine_cmd": [
+     "-m",
+     "vision.refine.match",
+     "--model",
+     "cache/vision/refine/runs/all_v3tied/model_20000.pt",
+     "--steps",
+     "24",
+     "--commit",
+     "argmax",
+     "--kin-lam",
+     "10",
+     "--out",
+     "cache/vision/ball_video_refD3.npz"
+    ],
+    "content_keys": [
+     "xy"
+    ],
+    "content_note": "hash of the array the possession model reads (mtah.run_refD.ball_array_refD: xy); the other keys of the file depend on the vision.refine.match version (E148: a rerun with the current code is bit-identical on all 14 ball arrays and adds refD4 keys)"
+   }
+  },
+  "tag_layer": {
+   "smart_tagging_sha256": "0594d35e3df01b9c5002372d8615e2e8ef5379ac8f4e84c5ef7a53f4304c9019",
+   "timing_sha256": "785d38bd3bc972fb78c7516918a9b3a65b3b2f2d280f236bd037e43b1acbee01"
+  }
+ },
+ "signals_note": "main signals {name}.F3.signals.npz = the member on T2team (= R2B2PT's {name}.T2team.signals.npz); {name}.F3.OWN.signals.npz = the same fitted member on the OWN tracking (final_signals --tracking OWN=FILE)",
+ "tag_layer": {
+  "variant": "B2",
+  "video_ball": true
+ },
+ "player_fix": {
+  "mode": "T2team",
+  "about": "Track T2 (E182 / E196) corrected provided tracking: team of a track corrected where the kit colour of our player detections contradicts it for a sustained stretch, keeper-kit calls -> team defending that goal (keeper tracks by rule), referee-kit stretches removed; 92 slots (slot 46+s = slot s flipped). Label-free, no slot / frame literals (src/mtah/player_fix.py).",
+  "tracking": "cache/player_fix/atd_tactical_T2team.npz",
+  "cands_dir": "cache/vision/players_cands",
+  "detector": {
+   "path": "cache/vision/runs/players_s/weights/best.pt",
+   "sha256": "3f8be2bf4c6f981551ab2735e7bc633e6317dc67e7fca867a0b7b4eaa13fcf23",
+   "note": "E037 YOLO11s person detector trained on SoccerNet-GSR train + Roboflow Football-Player-Detection only (src/vision/prep_players.py, train_players.py; amp, deterministic=False); shipped like the ball detector because its training is not bit-deterministic"
+  },
+  "detect_cmd": [
+   "src/vision/run_players.py",
+   "detect"
+  ],
+  "expected": {
+   "content_sha256": "7ac1fdef073541d5580574d6e96b56d2119cddff6def6033aa8adfe17e1a3aba",
+   "content_keys": null,
+   "file_sha256": "db386efaa78c56449206863b0ee5bfad706b87d1d25aa5992c142840bbe41c91",
+   "cands_sha256": "ccbb9bdf652bb7fa3b17bab5277a9317fd469bb85e323ca061cfe49a4c31e14e",
+   "note": "content_sha256 = run.content_hash over every array (ball, players, team) and is the check; file_sha256 = Track T2's original atd_tactical_T2team.npz (byte-identical rebuild); cands_sha256 = mtah.player_fix.cands_hash of the detections it was built from (logged, diagnostic only)"
+  }
+ },
+ "player_sources": [
+  {
+   "name": "OWN",
+   "mode": "OWN",
+   "about": "players purely from our own video tracker (src/mtah/player_fix.py mode OWN = Track P1 build_input OWN): entries with a team, referees / unknown dropped, <= 11 per team by track confidence, a stable slot per identity in the provided slot layout, track ids holding two bodies split by nearest position",
+   "tracker": {
+    "file": "cache/player_fix/d4h/players_video_d4h.npz",
+    "build_cmd": [
+     "-m",
+     "vision.d4track",
+     "--cands",
+     "cache/vision/players_cands",
+     "--work",
+     "cache/player_fix/d4h"
+    ],
+    "vision_env": true,
+    "note": "Track D4's composed tracker d4h (K2 v7 pieces + re-ID embedding, D4 learned linker, team veto; src/vision/d4track.py, bit-exact port of trackD4/compose/players_video_d4h_k2v7_fbveto.npz): re-ID embeddings from the tactical video (GPU, ~6 min) + tracker (~14 min); reads the player detections of step players (cache/vision/players_cands), the provided tracking and homography",
+    "weights": [
+     {
+      "path": "cache/vision/track/k2_reid_h3.pt",
+      "sha256": "9c7b240a96f33fad72ea05b35cfcfc406865347d8a30732df5773a81362e13c7"
+     },
+     {
+      "path": "cache/vision/track/d4h_linker.pt",
+      "sha256": "281103f91921c65ff1b8af796fee42f9e5446a0b3ce0a1487f2b1f7601b2765b"
+     }
+    ],
+    "expected": {
+     "content_sha256": "83ca0482be364bfd2389795aa0452d6b083f1563b0d69c01feac1eb53a863450",
+     "content_keys": [
+      "xy",
+      "team",
+      "track_id",
+      "conf",
+      "state",
+      "team_src"
+     ]
+    }
+   },
+   "tracking": "cache/player_fix/atd_tactical_OWN_d4h.npz",
+   "expected": {
+    "content_sha256": "bee11754edd20228903931b0e1d7ec34ef7329818267a042739cd99ec591c0c1",
+    "file_sha256": "7d381b4e1701fd5dcfb10008ef0e382a75638ab8747aebe475dec3548ca8fa8e"
+   }
+  }
+ ],
+ "merge_sources": {
+  "terms": [
+   [
+    "",
+    0.625
+   ],
+   [
+    "OWN",
+    0.375
+   ]
+  ],
+  "dead_from": null
+ }
+}

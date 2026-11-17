@@ -1,0 +1,83 @@
+{
+ "corner": {
+  "stop": {
+   "n": 26,
+   "p10": 19.4,
+   "median": 28.58,
+   "p90": 38.54,
+   "max": 45.12
+  },
+  "flight": {
+   "n": 24,
+   "p10": 1.32,
+   "median": 1.64,
+   "p90": 2.26,
+   "max": 3.04
+  }
+ },
+ "free_kick": {
+  "stop": {
+   "n": 76,
+   "p10": 5.5,
+   "median": 16.14,
+   "p90": 52.94,
+   "max": 159.92
+  },
+  "flight": {
+   "n": 80,
+   "p10": 0.88,
+   "median": 1.62,
+   "p90": 2.99,
+   "max": 5.36
+  }
+ },
+ "goal_kick": {
+  "stop": {
+   "n": 47,
+   "p10": 10.26,
+   "median": 24.72,
+   "p90": 46.87,
+   "max": 89.08
+  },
+  "flight": {
+   "n": 46,
+   "p10": 1.42,
+   "median": 2.48,
+   "p90": 4.1,
+   "max": 6.56
+  }
+ },
+ "kick_off": {
+  "stop": {
+   "n": 11,
+   "p10": 53.48,
+   "median": 61.12,
+   "p90": 68.12,
+   "max": 74.52
+  },
+  "flight": {
+   "n": 11,
+   "p10": 0.92,
+   "median": 1.04,
+   "p90": 1.16,
+   "max": 1.24
+  }
+ },
+ "throw_in": {
+  "stop": {
+   "n": 109,
+   "p10": 3.49,
+   "median": 8.76,
+   "p90": 23.22,
+   "max": 51.36
+  },
+  "flight": {
+   "n": 108,
+   "p10": 0.75,
+   "median": 1.32,
+   "p90": 2.32,
+   "max": 3.88
+  }
+ },
+ "_about": "Metrica sample games 1-3 manual events; stop = restart - end of stopping event (s); flight = restart pass end - start (s); tools/trackG/metrica_timing.py"
+}

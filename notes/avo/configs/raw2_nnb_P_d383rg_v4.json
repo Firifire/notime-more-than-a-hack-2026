@@ -1,0 +1,95 @@
+{
+ "name": "raw2_nnb_P_d383rg_v4",
+ "pipeline": "mtah.pipe_raw2",
+ "ball": "atd",
+ "data": {
+  "dead": [
+   "idsse-ctrl",
+   "stv2"
+  ],
+  "team": [
+   "idsse-ctrl",
+   "metrica",
+   "pff",
+   "skillcorner",
+   "stv2"
+  ]
+ },
+ "step": {
+  "dead": 3,
+  "other": 6
+ },
+ "decoder": {
+  "switch": 3,
+  "dead": 8,
+  "beta": 3.0,
+  "dead_gate": {
+   "lo": 0.7,
+   "hi": 0.85,
+   "w": 0.5,
+   "heads": [
+    "dead",
+    "on",
+    "off"
+   ]
+  },
+  "w_raw": {
+   "team": 0.5,
+   "sw": 0.5
+  },
+  "w_nnb": {
+   "dead": 0.5
+  },
+  "raw_gate": {
+   "w": 0.333,
+   "lo": 0.7,
+   "hi": 0.85,
+   "heads": [
+    "dead",
+    "on",
+    "off"
+   ]
+  }
+ },
+ "lgb": {
+  "pipe_spell_w": {
+   "alpha": 0.5,
+   "ref": 250,
+   "min": 0.5,
+   "max": 3.0
+  },
+  "pipe_nn_spell_w": {
+   "alpha": 0.5,
+   "ref": 250,
+   "min": 0.5,
+   "max": 3.0
+  },
+  "pipe_nn_seeds": 3,
+  "pipe_dead_blind": {
+   "sources": [
+    "pff"
+   ],
+   "w": 0.5,
+   "nn_share": 0,
+   "present_w": 0.5
+  },
+  "pipe_raw_args": {
+   "iters": 4000
+  },
+  "pipe_raw_seeds": 1,
+  "pipe_nn_blind": {
+   "seeds": 2,
+   "sources": [
+    "pff"
+   ],
+   "share": 0.5
+  }
+ },
+ "drop_features": [],
+ "folds": 4,
+ "seed": 0,
+ "split_file": "notes/avo/split_v4.json",
+ "feature_workers": 4,
+ "n_jobs": 6,
+ "reuse_oof": "runs/eval/raw2_nnb_P_v3_oof"
+}
